@@ -1,13 +1,18 @@
 #include <Arduino.h>
+#include <WiFi.h>
 #include <time.h>
 #include <esp32_smartdisplay.h>
-#include <ui/ui.h>
 
+#include <config.h>
+#include <ui/ui.h>
 #include <Wire.h>
 #include <AHT20.h>
 #include <GyverBME280.h>
 
 float br_level = 0.25;
+
+unsigned long lastTimeSyncMillis = 0;
+void update_time();
 
 AHT20 aht20(0x38);
 void ath20_data_timer(lv_timer_t * timer);
@@ -32,6 +37,50 @@ void OnRotateClicked(lv_event_t *e)
     lv_disp_set_rotation(disp, rotation);
 }
 
+void startWiFi() {
+    Serial.println("Connecting to WiFi...");
+    WiFi.begin(SSID, WIFI_PWD); // Use your SSID and password
+
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(1000);
+        Serial.println("Connecting to WiFi...");
+    }
+
+    Serial.println("Connected to WiFi");
+}
+
+boolean initTime() {
+  struct tm timeinfo;
+
+  // Connect to NTP server with 0 TZ offset, call setTimezone() later
+  configTime(0, 0, "pool.ntp.org");
+  if (!getLocalTime(&timeinfo)) {
+    log_e("Failed to obtain time.");
+    return false;
+  }
+  log_i("Time obtained: %s", asctime(&timeinfo));
+  return true;
+}
+
+void setTimezone(const char* timezone) {
+  // Clock settings are adjusted to show the new local time
+  setenv("TZ", timezone, 1);
+  tzset();
+}
+
+void syncTime() {
+  if (initTime()) {
+    lastTimeSyncMillis = millis();
+    setTimezone(TIMEZONE);
+  }
+}
+
+void updateTimeFromNTP() {
+    if (WiFi.status() != WL_CONNECTED) {
+      startWiFi();
+    }
+    syncTime();
+}
 
 // float BrightnessCallback() {
 //   float adapt=smartdisplay_lcd_adaptive_brightness_cds();
@@ -78,15 +127,17 @@ void update_humidity(float humidity) {
 }
 
 void update_time() {
-    // time_t now = time(NULL);
-    // struct tm *tm_struct = localtime(&now);
-
-    // char time_str[10];
-    // strftime(time_str, sizeof(time_str), "%H:%M", tm_struct);
-
-    lv_label_set_text(time_label, "20:20");
+    struct tm timeinfo;
+    if (getLocalTime(&timeinfo)) {
+        char timeString[32];
+        strftime(timeString, sizeof(timeString), "%H:%M", &timeinfo);
+        log_i("Update time: %s", timeString);
+        lv_label_set_text(time_label, timeString);
+    } else {
+        lv_label_set_text(time_label, "--:--");
+        log_e("Failed to update time.");
+    }
 }
-
 
 void ath20_data_timer(lv_timer_t * timer) {
   if (aht20.available() == true)
@@ -176,10 +227,12 @@ void setup()
     } else {
         Serial.println("Error starting wire");
     }
-    Serial.println("PING 2");
+
+    // updateTimeFromNTP();
 }
 
 ulong next_millis;
+ulong next_millis_time;
 
 void loop()
 {
@@ -187,6 +240,8 @@ void loop()
     if (now > next_millis)
     {
         next_millis = now + 500;
+
+        // update_time();
 
         // Serial.println("PING");
 
@@ -201,6 +256,16 @@ void loop()
         sprintf(text_buffer, "%d", cdr);
         lv_label_set_text(ui_lblCdrValue, text_buffer);
 #endif
+    }
+
+    if (lastTimeSyncMillis == 0 || now - lastTimeSyncMillis > UPDATE_INTERVAL_MINUTES * 60000) {
+        updateTimeFromNTP();
+    }
+
+    if (now > next_millis_time && lastTimeSyncMillis != 0)
+    {
+        next_millis_time = now + 10*1000;
+        update_time();
     }
 
     lv_timer_handler();

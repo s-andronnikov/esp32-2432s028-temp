@@ -206,9 +206,10 @@ void init_time(lv_obj_t *parent) {
     lv_obj_set_size(time_parent, LV_PCT(50), LV_PCT(30)); // Example: Set size to fill the screen
     lv_obj_align(time_parent, LV_ALIGN_BOTTOM_LEFT, 0, 0); // Example: Center the parent object
 
-    lv_obj_t *time_label = lv_label_create(time_parent);
+    time_label = lv_label_create(time_parent);
     lv_obj_set_style_text_font(time_label, &lv_font_montserrat_46, 0);
-    lv_obj_set_style_text_color(time_label, lv_color_white(), 0);
+    // lv_obj_set_style_text_color(time_label, lv_color_white(), 0);
+    lv_obj_set_style_text_color(time_label, lv_color_make(200, 200, 200), 0);
 
     // Position at the bottom left of the screen
     lv_obj_align(time_label, LV_ALIGN_CENTER, 0, 0);
