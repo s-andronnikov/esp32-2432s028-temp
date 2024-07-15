@@ -55,6 +55,7 @@ lv_obj_t * ui____initial_actions0;
 const lv_img_dsc_t * ui_imgset_lenax[1] = {&ui_img_lena80x80_png};
 
 extern float br_level;
+lv_obj_t *time_label;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16

@@ -163,9 +163,11 @@ void init_br_level_control(lv_obj_t *parent) {
     // Create a label for displaying br_level percentage
     lv_obj_t *br_parent = lv_obj_create(parent); // Create parent object on the active screen
 
+    lv_obj_remove_style_all(br_parent);
+    lv_obj_set_style_pad_all(br_parent, 0, 0);
     // Step 3: Optionally set properties of the parent object, like size, position, etc.
-    lv_obj_set_size(br_parent, LV_PCT(50), LV_PCT(30)); // Example: Set size to fill the screen
-    lv_obj_align(br_parent, LV_ALIGN_BOTTOM_LEFT, 0, 0); // Example: Center the parent object
+    lv_obj_set_size(br_parent, 110, 32); // Example: Set size to fill the screen
+    lv_obj_align(br_parent, LV_ALIGN_TOP_RIGHT, 0, 35); // Example: Center the parent object
 
     lv_obj_t *br_level_label = lv_label_create(br_parent);
     char br_level_str[10];
@@ -194,6 +196,29 @@ void init_br_level_control(lv_obj_t *parent) {
 }
 
 
+// Function to create and show the time
+void init_time(lv_obj_t *parent) {
+    lv_obj_t *time_parent = lv_obj_create(parent); // Create parent object on the active screen
+
+    // lv_obj_remove_style_all(time_parent);
+    lv_obj_set_style_pad_all(time_parent, 0, 0);
+
+    lv_obj_set_size(time_parent, LV_PCT(50), LV_PCT(30)); // Example: Set size to fill the screen
+    lv_obj_align(time_parent, LV_ALIGN_BOTTOM_LEFT, 0, 0); // Example: Center the parent object
+
+    lv_obj_t *time_label = lv_label_create(time_parent);
+    lv_obj_set_style_text_font(time_label, &lv_font_montserrat_46, 0);
+    lv_obj_set_style_text_color(time_label, lv_color_white(), 0);
+
+    // Position at the bottom left of the screen
+    lv_obj_align(time_label, LV_ALIGN_CENTER, 0, 0);
+
+    // Initial update
+    lv_label_set_text(time_label, "--:--");
+    // Assuming you have a mechanism to periodically call update_time()
+    // For example, using a timer that calls update_time(time_label) every minute
+}
+
 void ui_scrMain_screen_init(void)
 {
 
@@ -216,81 +241,11 @@ void ui_scrMain_screen_init(void)
     lv_obj_set_align(ui_pnlMain, LV_ALIGN_CENTER);
     lv_obj_clear_flag(ui_pnlMain, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
-    // ui_lblMilliseconds = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_lblMilliseconds, LV_SIZE_CONTENT);   /// 1
-    // lv_obj_set_height(ui_lblMilliseconds, LV_SIZE_CONTENT);    /// 1
-    // lv_label_set_text(ui_lblMilliseconds, "Brigtness:\n");
-
-    // ui_lblMillisecondsValue = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_lblMillisecondsValue, LV_SIZE_CONTENT);   /// 1
-    // lv_obj_set_height(ui_lblMillisecondsValue, LV_SIZE_CONTENT);    /// 1
-    // lv_obj_set_align(ui_lblMillisecondsValue, LV_ALIGN_TOP_RIGHT);
-    // lv_label_set_text(ui_lblMillisecondsValue, "--");
-
 
     init_temperature_display(ui_pnlMain);
     init_humidity_display(ui_pnlMain);
     init_br_level_control(ui_pnlMain);
-
-
-    // ui_AhtTemp = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_AhtTemp, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_AhtTemp, LV_SIZE_CONTENT);
-    // lv_obj_set_y(ui_AhtTemp, 20);
-    // lv_label_set_text(ui_AhtTemp, "AHT Temp:");
-
-    // ui_AhtTempValue = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_AhtTempValue, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_AhtTempValue, LV_SIZE_CONTENT);
-    // lv_obj_set_align(ui_AhtTempValue, LV_ALIGN_TOP_RIGHT);
-    // lv_obj_set_y(ui_AhtTempValue, 20);
-    // lv_label_set_text(ui_AhtTempValue, "--");
-
-    // ui_AhtHum = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_AhtHum, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_AhtHum, LV_SIZE_CONTENT);
-    // lv_obj_set_y(ui_AhtHum, 40);
-    // lv_label_set_text(ui_AhtHum, "AHT Hum:");
-
-    // ui_AhtHumValue = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_AhtHumValue, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_AhtHumValue, LV_SIZE_CONTENT);
-    // lv_obj_set_align(ui_AhtHumValue, LV_ALIGN_TOP_RIGHT);
-    // lv_obj_set_y(ui_AhtHumValue, 40);
-    // lv_label_set_text(ui_AhtHumValue, "--");
-
-    // ui_BmpTemp = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_BmpTemp, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_BmpTemp, LV_SIZE_CONTENT);
-    // lv_obj_set_y(ui_BmpTemp, 60);
-    // lv_label_set_text(ui_BmpTemp, "BMP Temp:");
-
-    // ui_BmpTempValue = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_BmpTempValue, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_BmpTempValue, LV_SIZE_CONTENT);
-    // lv_obj_set_align(ui_BmpTempValue, LV_ALIGN_TOP_RIGHT);
-    // lv_obj_set_y(ui_BmpTempValue, 60);
-    // lv_label_set_text(ui_BmpTempValue, "--");
-
-    // ui_BmpPress = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_BmpPress, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_BmpPress, LV_SIZE_CONTENT);
-    // lv_obj_set_y(ui_BmpPress, 80);
-    // lv_label_set_text(ui_BmpPress, "AHT Pressure:");
-
-    // ui_BmpPressValue = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_BmpPressValue, LV_SIZE_CONTENT);
-    // lv_obj_set_height(ui_BmpPressValue, LV_SIZE_CONTENT);
-    // lv_obj_set_align(ui_BmpPressValue, LV_ALIGN_TOP_RIGHT);
-    // lv_obj_set_y(ui_BmpPressValue, 80);
-    // lv_label_set_text(ui_BmpPressValue, "--");
-
-    // ui_lblCdr = lv_label_create(ui_pnlMain);
-    // lv_obj_set_width(ui_lblCdr, LV_SIZE_CONTENT);   /// 1
-    // lv_obj_set_height(ui_lblCdr, LV_SIZE_CONTENT);    /// 1
-    // lv_obj_set_x(ui_lblCdr, 0);
-    // lv_obj_set_y(ui_lblCdr, 100);
-    // lv_label_set_text(ui_lblCdr, "Light:");
+    init_time(ui_pnlMain);
 
     ui_lblCdrValue = lv_label_create(ui_pnlMain);
     lv_obj_set_width(ui_lblCdrValue, LV_SIZE_CONTENT);   /// 1
@@ -311,7 +266,6 @@ void ui_scrMain_screen_init(void)
     lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label1, LV_SIZE_CONTENT);    /// 1
     lv_obj_set_align(ui_Label1, LV_ALIGN_CENTER);
-    // lv_label_set_text(ui_Label1, "Rotate");
     lv_label_set_text_fmt(ui_Label1, LV_SYMBOL_SHUFFLE); 
 
     // ui_btnCount = lv_btn_create(ui_pnlMain);

@@ -63,6 +63,8 @@ extern lv_obj_t * ui____initial_actions0;
 extern float br_level;
 extern void smartdisplay_lcd_set_backlight(float duty);
 
+lv_obj_t *time_label;
+
 LV_IMG_DECLARE(ui_img_lena80x80_png);    // assets/Lena80x80.png
 
 

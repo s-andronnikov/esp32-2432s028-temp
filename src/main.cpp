@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+#include <time.h>
 #include <esp32_smartdisplay.h>
 #include <ui/ui.h>
 
@@ -75,6 +75,16 @@ void update_humidity(float humidity) {
     // Update the label with the new humidity value
     lv_arc_set_value(humidity_arc, (int)humidity);
     lv_label_set_text(humidity_value_label, humidity_str);
+}
+
+void update_time() {
+    // time_t now = time(NULL);
+    // struct tm *tm_struct = localtime(&now);
+
+    // char time_str[10];
+    // strftime(time_str, sizeof(time_str), "%H:%M", tm_struct);
+
+    lv_label_set_text(time_label, "20:20");
 }
 
 
